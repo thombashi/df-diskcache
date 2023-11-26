@@ -6,6 +6,8 @@
 Summary
 ============================================
 
+``df-diskcache`` is a Python library for caching ``pandas.DataFrame`` objects to local disk.
+
 .. image:: https://github.com/thombashi/df-diskcache/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/thombashi/df-diskcache/actions/workflows/ci.yml
     :alt: CI status of Linux/macOS/Windows
