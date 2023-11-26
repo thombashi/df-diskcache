@@ -34,15 +34,18 @@ with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     TESTS_REQUIRES = [line.strip() for line in f if line.strip()]
 
+
 setuptools.setup(
     name=MODULE_NAME,
     version=pkg_info["__version__"],
     url=REPOSITORY_URL,
     author=pkg_info["__author__"],
     author_email=pkg_info["__email__"],
-    description="DESCRIPTION",
+    description=(
+        "df-diskcache is a Python library for caching pandas.DataFrame objects to local disk."
+    ),
     include_package_data=True,
-    keywords=["library"],
+    keywords=["cache", "disk", "dataframe", "library", "pandas"],
     license=pkg_info["__license__"],
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
