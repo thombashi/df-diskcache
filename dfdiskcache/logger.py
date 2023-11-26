@@ -1,6 +1,13 @@
 # type: ignore
 
-MODULE_NAME = "project_name"
+
+try:
+    from typing import Final
+except ImportError:
+    from typing_extensions import Final  # type: ignore
+
+
+MODULE_NAME: Final = "dfdiskcache"
 
 
 class NullLogger:
@@ -55,7 +62,12 @@ except ImportError:
 
 
 def set_logger(is_enable: bool, propagation_depth: int = 1) -> None:
+    import simplesqlite
+
     if is_enable:
         logger.enable(MODULE_NAME)
     else:
         logger.disable(MODULE_NAME)
+
+    simplesqlite.SimpleSQLite.global_debug_query = is_enable
+    simplesqlite.set_logger(True, propagation_depth - 1)
