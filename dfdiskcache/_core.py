@@ -1,5 +1,6 @@
 import hashlib
 import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Union
@@ -108,7 +109,10 @@ class DataFrameDiskCache:
 
     def set(self, key: str, value: pd.DataFrame, ttl: Optional[int] = None) -> str:
         hash = self.__calc_hash(key)
-        tmp_fpath = f"/tmp/{MODULE_NAME}_{hash}_{get_utcnow_timestamp():d}.{self.PICKLE_EXT}"
+        tmp_fpath = os.path.join(
+            tempfile.gettempdir(),
+            f"{MODULE_NAME}_{hash}_{get_utcnow_timestamp():d}.{self.PICKLE_EXT}",
+        )
         cache_fpath = self.cache_dir_path / f"{hash}.{self.PICKLE_EXT}"
 
         value.to_pickle(tmp_fpath)
