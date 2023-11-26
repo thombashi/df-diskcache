@@ -49,6 +49,7 @@ class DataFrameDiskCache:
 
         self.__create_cache_dir()
         self.__con = SimpleSQLite(self.__cache_db_path, mode="a")
+        self.__con.debug_query = True
         DiskCacheInfo.attach(self.__con)
         DiskCacheInfo.create()
 

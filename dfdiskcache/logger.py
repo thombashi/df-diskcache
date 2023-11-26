@@ -69,5 +69,4 @@ def set_logger(is_enable: bool, propagation_depth: int = 1) -> None:
     else:
         logger.disable(MODULE_NAME)
 
-    simplesqlite.SimpleSQLite.global_debug_query = is_enable
     simplesqlite.set_logger(True, propagation_depth - 1)
