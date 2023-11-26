@@ -41,7 +41,7 @@ def main() -> None:
     initialize_logger(__name__, LogLevel.DEBUG)
 
     cache = DataFrameDiskCache()
-    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"  # noqa: E501
 
     df = cache.get(url)
     if df is None:
