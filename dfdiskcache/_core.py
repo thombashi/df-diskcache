@@ -152,7 +152,6 @@ class DataFrameDiskCache:
 
         for record in DiskCacheInfo.select(where=Where(DiskCacheInfo.key, hash)):
             logger.debug(f"touching: {record}")
-            print("!!")
             DiskCacheInfo.update(
                 set_query=[Set(DiskCacheInfo.updated_at, utcnow_timestamp)],
                 where=Where(DiskCacheInfo.key, record.key),
