@@ -39,7 +39,6 @@ Supports the following methods:
 - ``touch``: Update the last accessed time of a cache entry to extend the TTL.
 - ``delete``
 - ``prune``: Delete expired cache entries.
-- 
 - Dictionary-like operations:
     - ``__getitem__``
     - ``__setitem__``
