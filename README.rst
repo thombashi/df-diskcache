@@ -8,6 +8,14 @@ Summary
 
 ``df-diskcache`` is a Python library for caching ``pandas.DataFrame`` objects to local disk.
 
+.. image:: https://badge.fury.io/py/df-diskcache.svg
+    :target: https://badge.fury.io/py/df-diskcache
+    :alt: PyPI package version
+
+.. image:: https://img.shields.io/pypi/pyversions/df-diskcache.svg
+    :target: https://pypi.org/project/df-diskcache
+    :alt: Supported Python versions
+
 .. image:: https://github.com/thombashi/df-diskcache/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/thombashi/df-diskcache/actions/workflows/ci.yml
     :alt: CI status of Linux/macOS/Windows
@@ -86,6 +94,28 @@ You can also use operations like a dictionary:
             cache[url] = df
         else:
             print("cache hit")
+
+        print(df)
+
+
+Set TTL for cache entries
+--------------------------------------------
+
+:Sample Code:
+    .. code-block:: python
+
+        import pandas as pd
+        from dfdiskcache import DataFrameDiskCache
+
+        DataFrameDiskCache.DEFAULT_TTL = 10  # you can override the default TTL (default: 3600 seconds)
+
+        cache = DataFrameDiskCache()
+        url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+
+        df = cache.get(url)
+        if df is None:
+            df = pd.read_csv(url)
+            cache.set(url, df, ttl=60)  # you can set a TTL for the key-value pair
 
         print(df)
 
