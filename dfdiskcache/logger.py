@@ -1,10 +1,6 @@
 # type: ignore
 
-
-try:
-    from typing import Final
-except ImportError:
-    from typing_extensions import Final  # type: ignore
+from typing import Final
 
 
 MODULE_NAME: Final = "dfdiskcache"

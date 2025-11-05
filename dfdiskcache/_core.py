@@ -3,7 +3,7 @@ import os
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Union
+from typing import Final, Optional, Union
 
 import pandas as pd
 from simplesqlite import SimpleSQLite
@@ -11,12 +11,6 @@ from simplesqlite.model import Integer, Model, Text
 from simplesqlite.query import And, Set, Where
 
 from .logger import MODULE_NAME, logger  # type: ignore
-
-
-try:
-    from typing import Final  # type: ignore
-except ImportError:
-    from typing_extensions import Final
 
 
 def get_utcnow_timestamp() -> int:
