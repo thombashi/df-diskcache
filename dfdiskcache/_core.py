@@ -117,7 +117,7 @@ class DataFrameDiskCache:
         )
         for record in results:
             if not os.path.isfile(record.path):
-                # delete the invalid cache entry
+                # TODO: delete the invalid cache info record
                 return None
 
             logger.debug(f"cache found: {record}")
