@@ -57,70 +57,120 @@ Supports the following methods:
 Usage
 ============================================
 
-:Sample Code:
-    .. code-block:: python
+Basic Usage
+--------------------------------------------
 
-        import pandas as pd
-        from dfdiskcache import DataFrameDiskCache
+.. code-block:: python
 
-        cache = DataFrameDiskCache()
-        url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+    import pandas as pd
+    from dfdiskcache import DataFrameDiskCache
 
-        df = cache.get(url)
-        if df is None:
-            print("cache miss")
-            df = pd.read_csv(url)
-            cache.set(url, df)
-        else:
-            print("cache hit")
+    cache = DataFrameDiskCache()
+    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
 
-        print(df)
+    df = cache.get(url)
+    if df is None:
+        print("cache miss")
+        df = pd.read_csv(url)
+        cache.set(url, df)
+    else:
+        print("cache hit")
+
+    print(df)
 
 You can also use operations like a dictionary:
 
-:Sample Code:
-    .. code-block:: python
+.. code-block:: python
 
-        import pandas as pd
-        from dfdiskcache import DataFrameDiskCache
+    import pandas as pd
+    from dfdiskcache import DataFrameDiskCache
 
-        cache = DataFrameDiskCache()
-        url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+    cache = DataFrameDiskCache()
+    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
 
+    df = cache[url]
+    if df is None:
+        print("cache miss")
+        df = pd.read_csv(url)
+        cache[url] = df
+    else:
+        print("cache hit")
+
+    print(df)
+
+
+Cache existence check
+--------------------------------------------
+You can check if a cache entry exists by using the ``in`` operator.
+
+.. code-block:: python
+
+    import pandas as pd
+    from dfdiskcache import DataFrameDiskCache
+
+    cache = DataFrameDiskCache()
+    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+
+    if url in cache:
+        print("cache exists")
         df = cache[url]
-        if df is None:
-            print("cache miss")
-            df = pd.read_csv(url)
-            cache[url] = df
-        else:
-            print("cache hit")
-
-        print(df)
+    else:
+        print("cache does not exist")
 
 
 Set TTL for cache entries
 --------------------------------------------
+You can set the default TTL for cache entries by setting the ``DataFrameDiskCache.DEFAULT_TTL`` or the ``ttl`` parameter of the ``set`` method.
 
-:Sample Code:
-    .. code-block:: python
+.. code-block:: python
 
-        import pandas as pd
-        from dfdiskcache import DataFrameDiskCache
+    import pandas as pd
+    from dfdiskcache import DataFrameDiskCache
 
-        DataFrameDiskCache.DEFAULT_TTL = 10  # you can override the default TTL (default: 3600 seconds)
+    DataFrameDiskCache.DEFAULT_TTL = 10  # you can override the default TTL (default: 3600 seconds)
 
-        cache = DataFrameDiskCache()
-        url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
+    cache = DataFrameDiskCache()
+    url = "https://raw.githubusercontent.com/pandas-dev/pandas/v2.1.3/pandas/tests/io/data/csv/iris.csv"
 
-        df = cache.get(url)
-        if df is None:
-            df = pd.read_csv(url)
-            cache.set(url, df, ttl=60)  # you can set a TTL for the key-value pair
+    df = cache.get(url)
+    if df is None:
+        df = pd.read_csv(url)
+        cache.set(url, df, ttl=60)  # you can set a TTL for the key-value pair
 
-        print(df)
+    print(df)
+
+
+Delete cache entries
+--------------------------------------------
+You can delete a cache entry by using the ``del`` operator or the ``delete`` method.
+
+.. code-block:: python
+
+    import pandas as pd
+    from dfdiskcache import DataFrameDiskCache
+
+    cache = DataFrameDiskCache()
+
+    key = "example key"
+    if key not in cache:
+        df = pd.DataFrame([["a", 1], ["b", 2]], columns=["col_a", "col_b"])
+        cache.set(key, df)
+
+    # delete a cache entry by using del operator
+    del cache[url]
+    
+    # delete a cache entry by using delete method
+    cache.delete(url)
+
+
+Cache lifetime management
+--------------------------------------------
+Expired cache entries are automatically deleted when you access a cache entry or invoke the ``prune`` method.
+
+You can refresh the last accessed time of a cache entry by using the ``touch`` method.
 
 
 Dependencies
 ============================================
-- Python 3.7+
+- Python 3.9+
 - `Python package dependencies (automatically installed) <https://github.com/thombashi/df-diskcache/network/dependencies>`__
