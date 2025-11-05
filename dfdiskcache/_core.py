@@ -1,5 +1,6 @@
 import hashlib
 import os
+import shutil
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -153,7 +154,9 @@ class DataFrameDiskCache:
         cache_fpath = self.cache_dir_path / f"{hash}.{self.PICKLE_EXT}"
 
         value.to_pickle(tmp_fpath)
-        os.rename(tmp_fpath, cache_fpath)
+
+        # Use shutil.move instead of os.rename to handle cross-filesystem moves
+        shutil.move(tmp_fpath, cache_fpath)
 
         utcnow_timestamp = get_utcnow_timestamp()
         num_record = DiskCacheInfo.fetch_num_records(where=Where(DiskCacheInfo.key, hash))  # type: ignore
