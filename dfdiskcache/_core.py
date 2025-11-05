@@ -52,12 +52,12 @@ class DataFrameDiskCache:
         """
 
         if not cache_dir_path:
-            self.__cache_dir_path: Final[Path] = _gen_default_cache_dir_path()
+            self.__cache_dir_path = _gen_default_cache_dir_path()
         else:
             self.__cache_dir_path = Path(cache_dir_path)
 
         self.__create_cache_dir()
-        self.__con = SimpleSQLite(self.__cache_db_path, mode="a")
+        self.__con = SimpleSQLite(str(self.__cache_db_path), mode="a")
         self.__con.debug_query = True
         DiskCacheInfo.attach(self.__con)
         DiskCacheInfo.create()
@@ -122,7 +122,12 @@ class DataFrameDiskCache:
 
             logger.debug(f"cache found: {record}")
 
-            return pd.read_pickle(record.path)
+            obj = pd.read_pickle(record.path)
+            if isinstance(obj, pd.DataFrame):
+                return obj
+
+            logger.warning(f"cached object is not a DataFrame: path={record.path}, type={type(obj)}")
+            return None
 
         logger.debug(f"valid cache not found: hash={hash}")
 
@@ -155,7 +160,7 @@ class DataFrameDiskCache:
         os.rename(tmp_fpath, cache_fpath)
 
         utcnow_timestamp = get_utcnow_timestamp()
-        num_record = DiskCacheInfo.fetch_num_records(where=Where(DiskCacheInfo.key, hash))
+        num_record = DiskCacheInfo.fetch_num_records(where=Where(DiskCacheInfo.key, hash))  # type: ignore
 
         if num_record == 0:
             if ttl is None:
