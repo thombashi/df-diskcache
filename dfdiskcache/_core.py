@@ -42,6 +42,15 @@ class DataFrameDiskCache:
     PICKLE_EXT = "pkl"
 
     def __init__(self, cache_dir_path: Union[str, Path, None] = None) -> None:
+        """Local disk cache for pandas.DataFrame.
+
+        Args:
+            cache_dir_path (Union[str, Path, None], optional):
+                Path to the cache directory.
+                Defaults to ${HOME}/.cache/dfdiskcache.
+            prune_on_exit (bool, optional):
+        """
+
         if not cache_dir_path:
             self.__cache_dir_path: Final[Path] = _gen_default_cache_dir_path()
         else:
@@ -85,6 +94,17 @@ class DataFrameDiskCache:
         return hashlib.sha256(key.strip().encode()).hexdigest()
 
     def get(self, key: str) -> Optional[pd.DataFrame]:
+        """Get a cache entry.
+
+        Args:
+            key (str): Key of the cache entry.
+
+        Returns:
+            Optional[pd.DataFrame]:
+                Cached pandas.DataFrame instance if the cache entry is valid.
+                Otherwise, None.
+        """
+
         hash = self.__calc_hash(key)
         utcnow_timestamp = get_utcnow_timestamp()
         results = DiskCacheInfo.select(
@@ -109,6 +129,21 @@ class DataFrameDiskCache:
         return None
 
     def set(self, key: str, value: pd.DataFrame, ttl: Optional[int] = None) -> str:
+        """Store a cache entry.
+
+        Args:
+            key (str):
+                Key of the cache entry.
+            value (pd.DataFrame):
+                pandas.DataFrame to be cached.
+            ttl (Optional[int], optional):
+                Time to live in seconds of the cache entry.
+                Defaults to DataFrameDiskCache.DEFAULT_TTL
+
+        Returns:
+            str: Path to the cached file.
+        """
+
         hash = self.__calc_hash(key)
         tmp_fpath = os.path.join(
             tempfile.gettempdir(),
@@ -148,6 +183,14 @@ class DataFrameDiskCache:
         return hash
 
     def touch(self, key: str) -> Optional[str]:
+        """Update the updated_at timestamp of a cache entry.
+
+        Args:
+            key (str): Key of the cache entry.
+
+        Returns:
+            Optional[str]: Path to the cache entry if found. Otherwise, None.
+        """
         hash = self.__calc_hash(key)
         utcnow_timestamp = get_utcnow_timestamp()
 
