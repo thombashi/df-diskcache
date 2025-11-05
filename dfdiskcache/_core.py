@@ -185,7 +185,7 @@ class DataFrameDiskCache:
                 where=Where(DiskCacheInfo.key, hash),
             )
 
-        return hash
+        return str(cache_fpath)
 
     def touch(self, key: str) -> Optional[str]:
         """Update the updated_at timestamp of a cache entry.
@@ -205,7 +205,7 @@ class DataFrameDiskCache:
                 set_query=[Set(DiskCacheInfo.updated_at, utcnow_timestamp)],
                 where=Where(DiskCacheInfo.key, record.key),
             )
-            return hash
+            return record.path
 
         return None
 
@@ -227,15 +227,17 @@ class DataFrameDiskCache:
 
         return delete_ct
 
-    def delete(self, key: str) -> str:
+    def delete(self, key: str) -> Optional[str]:
         hash = self.__calc_hash(key)
         where = Where(DiskCacheInfo.key, hash)
+        deleted_path: Optional[str] = None
 
         for record in DiskCacheInfo.select(where=where):
             logger.debug(f"deleting: {record}")
             if os.path.isfile(record.path):
+                deleted_path = record.path
                 os.remove(record.path)
 
         DiskCacheInfo.delete(where=where)
 
-        return hash
+        return deleted_path
