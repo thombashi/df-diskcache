@@ -236,6 +236,9 @@ class DataFrameDiskCache:
             logger.debug(f"deleting: {record}")
             if os.path.isfile(record.path):
                 deleted_path = record.path
+                # TODO:
+                # The actual deletion should not be done here, but rather a deletion mark should be set.
+                # The actual removal will be handled by the prune method.
                 os.remove(record.path)
 
         DiskCacheInfo.delete(where=where)
