@@ -126,7 +126,9 @@ class DataFrameDiskCache:
             if isinstance(obj, pd.DataFrame):
                 return obj
 
-            logger.warning(f"cached object is not a DataFrame: path={record.path}, type={type(obj)}")
+            logger.warning(
+                f"cached object is not a DataFrame: path={record.path}, type={type(obj)}"
+            )
             return None
 
         logger.debug(f"valid cache not found: hash={hash}")
